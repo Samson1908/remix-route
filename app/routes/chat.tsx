@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { useLoaderData, useNavigate, useParams } from "@remix-run/react";
+import { useLoaderData, useNavigate, useParams, Link } from "@remix-run/react";
 import { getUserSession } from "../utils/session.server";
 import type { LoaderFunction } from "@remix-run/node";
-import { Search, Menu, Grid, FileSpreadsheet, File, ChartLine,FileCode } from "lucide-react";  // Add more icons for apps
- 
+import { Search, Grid, FileSpreadsheet, File, ChartLine, FileCode, MenuIcon } from "lucide-react";
+
 export const loader: LoaderFunction = async ({ request }) => {
   const user = await getUserSession(request);
   return { user, isAuthenticated: !!user, apiKey: process.env.OPENROUTER_API_KEY };
@@ -12,7 +12,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function ChatPage() {
   const { user, isAuthenticated, apiKey } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
-  const params = useParams(); // Get chat ID from the route params
+  const params = useParams();
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -20,17 +20,15 @@ export default function ChatPage() {
     }
   }, [isAuthenticated, navigate]);
 
-  const [isAppLauncherOpen, setAppLauncherOpen] = useState(false);  // State to manage app launcher visibility
+  const [isAppLauncherOpen, setAppLauncherOpen] = useState(false);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchActive, setSearchActive] = useState(false);
 
-  // Ref for app launcher container to detect click outside
-  const appLauncherRef = useRef(null);
+  const appLauncherRef = useRef<HTMLDivElement>(null);
 
-  // Close app launcher if clicked outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (appLauncherRef.current && !appLauncherRef.current.contains(event.target as Node)) {
@@ -38,16 +36,12 @@ export default function ChatPage() {
       }
     };
 
-    // Add event listener for clicks outside
     document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup event listener on component unmount
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  // Chat history list
   const chatHistory = [
     { id: "1", title: "Chat with AI - March 25" },
     { id: "2", title: "Tech Discussion - March 24" },
@@ -56,15 +50,13 @@ export default function ChatPage() {
 
   const selectedChatId = params.chatId || chatHistory[0].id;
 
-  // State for chat messages
-  const [chats, setChats] = useState({
+  const [chats, setChats] = useState<Record<string, Array<{ sender: string; text: string }>>>({
     "1": [{ sender: "assistant", text: "Welcome to your March 25 chat!" }],
     "2": [{ sender: "assistant", text: "This is your Tech Discussion!" }],
     "3": [{ sender: "assistant", text: "Let's chat about random things!" }],
   });
 
-  // Fetch AI response from OpenRouter API
-  const fetchAIResponse = async (messagesHistory) => {
+  const fetchAIResponse = async (messagesHistory: Array<{ sender: string; text: string }>) => {
     if (!apiKey) {
       console.error("API key is missing");
       return "Error: API key is missing!";
@@ -100,7 +92,6 @@ export default function ChatPage() {
     }
   };
 
-  // Send message and get AI response
   const handleSendMessage = async () => {
     if (!input.trim()) return;
 
@@ -114,11 +105,9 @@ export default function ChatPage() {
     setInput("");
     setLoading(true);
 
-    // Fetch AI response based on the latest state
     const updatedMessages = [...(chats[selectedChatId] || []), userMessage];
     const aiResponse = await fetchAIResponse(updatedMessages);
 
-    // Update chat with AI response
     setChats(prevChats => ({
       ...prevChats,
       [selectedChatId]: [...(prevChats[selectedChatId] || []), { sender: "assistant", text: aiResponse }],
@@ -130,10 +119,10 @@ export default function ChatPage() {
   return (
     <div className="flex h-screen bg-gray-900 text-white">
       {/* Sidebar */}
-      <aside className={`bg-gradient-to-r from-bg-gradient-to-r from-slate-500 to-slate-800 p-4 shadow-md transition-all duration-300 ${sidebarOpen ? "w-64" : "w-16 overflow-hidden"}`}>
+      <aside className={`bg-gradient-to-r from-slate-500 to-slate-800 p-4 shadow-md transition-all duration-300 ${sidebarOpen ? "w-64" : "w-16 overflow-hidden"}`}>
         <div className="flex justify-between items-center mb-4">
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 rounded-md hover:bg-gray-700">
-            <Menu size={sidebarOpen ? 24 : 20} />
+            <MenuIcon size={sidebarOpen ? 24 : 20} />
           </button>
 
           {sidebarOpen && (
@@ -175,40 +164,51 @@ export default function ChatPage() {
         )}
       </aside>
 
-      {/* Chat Box */}
+      {/* Main Chat Area */}
       <div className="flex-1 flex flex-col bg-gradient-to-r from-slate-900 to-slate-700 rounded-lg p-4 h-[90vh] overflow-hidden">
         <header className="text-center text-xl font-bold text-[#c026d3] mb-4 flex justify-between items-center">
           <span>AI Chat Assistant</span>
           
-          {/* App Launcher Icon */}
           <button
-            onClick={() => setAppLauncherOpen(!isAppLauncherOpen)} // Toggle app launcher visibility
+            onClick={() => setAppLauncherOpen(!isAppLauncherOpen)}
             className="p-2 rounded-full bg-gray-700 hover:bg-gray-600"
           >
             <Grid size={24} className="text-white" />
           </button>
         </header>
 
-        {/* App Launcher Container */}
+        {/* App Launcher */}
         {isAppLauncherOpen && (
-          <div ref={appLauncherRef} className="absolute top-32 right-20 bg-gray-800 rounded-lg p-4 grid grid-cols-2 gap-6 z-10">
-            <div className="flex items-center justify-center text-white p-2 rounded-md bg-gray-600 hover:bg-gray-500 cursor-pointer">
-              <FileSpreadsheet size={24} />
-              <span className="ml-2">My Sheet</span>
-            </div>
-            <div className="flex items-center justify-center text-white p-2 rounded-md bg-gray-600 hover:bg-gray-500 cursor-pointer">
-              <File size={24} />
-              <span className="ml-2">WorkBook</span>
-            </div>
-            <div className="flex items-center justify-center text-white p-2 rounded-md bg-gray-600 hover:bg-gray-500 cursor-pointer">
-              <ChartLine size={24} />
-              <span className="ml-2">Knowledge Graph</span>
-            </div>
-            <div className="flex items-center justify-center text-white p-2 rounded-md bg-gray-600 hover:bg-gray-500 cursor-pointer">
-              <FileCode size={24} />
-              <span className="ml-2">WB Script Files</span>
-            </div>
-            {/* Add more apps as needed */}
+          <div
+            ref={appLauncherRef}
+            className="absolute top-32 right-20 bg-gradient-to-r from-slate-300 to-indigo-600 rounded-lg p-4 w-72 h-96 overflow-y-auto grid grid-cols-3 gap-4 z-10 scrollbar-hide"
+          >
+            {[
+              { image: "knowlege-base.jpg", label: "Knowledge Base", link: "/sheets/new" },
+              { image: "knowledge-graph.png", label: "Knowledge Graph", link: "/sheets/new" },
+              { image: "files.jpg", label: "Files", link: "/files" },
+              { image: "workbook.jpg", label: "Workbook", link: "/workbook" },
+              { image: "sequence.jpg", label: "Sequences", link: "/sequence" },
+              { image: "contacts.jpg", label: "Contacts", link: "/scripts" },
+              { image: "settings.jpg", label: "Settings", link: "/settings" },
+              { image: "scripts.jpg", label: "Script Files", link: "/scripts" },
+              { image: "my-sheet.jpg", label: "My Sheets", link: "/my-sheet.jpg" },
+
+            ].map((app, index) => (
+              <Link
+                key={index}
+                to={app.link}
+                className="flex flex-col items-center p-4 bg-tra text-black rounded-lg shadow-lg 
+                ring-2 ring-transparent hover:ring-[#e879f9] transition cursor-pointer"
+              >
+                <img
+                  src={`/images/${app.image}`}
+                  className="w-16 h-16 object-cover"
+                  alt={app.label}
+                />
+                <span className="text-sm mt-2">{app.label}</span>
+              </Link>
+            ))}
           </div>
         )}
 
@@ -224,13 +224,14 @@ export default function ChatPage() {
           {loading && <p className="text-gray-400">Assistant is typing...</p>}
         </div>
 
-        {/* Message Input Box */}
+        {/* Message Input */}
         <div className="flex gap-2 items-center rounded-md border-t border-gray-700 p-2">
           <input
             type="text"
             placeholder="Type a message..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
             className="flex-1 bg-gray-700 text-white rounded-md p-2"
           />
           <button

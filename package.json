@@ -11,6 +11,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.1",
+    "@headlessui/tailwindcss": "^0.2.2",
     "@radix-ui/themes": "^3.2.1",
     "@remix-run/node": "^2.16.2",
     "@remix-run/react": "^2.16.2",

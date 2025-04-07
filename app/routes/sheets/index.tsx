@@ -1,4 +1,4 @@
-import { useState } from "react"; 
+import { useState } from "react";
 import { Link } from "@remix-run/react";
 import { Search, FileText, PlusSquare } from "lucide-react";
 
@@ -7,11 +7,11 @@ export default function SheetsPage() {
     const [searchActive, setSearchActive] = useState(false);
 
 
-// export default function SheetsIndex() {
-//   return (
-   
-//   );
-// }
+    // export default function SheetsIndex() {
+    //   return (
+
+    //   );
+    // }
 
 
     return (
@@ -38,37 +38,38 @@ export default function SheetsPage() {
 
             {/* Start a New Spreadsheet Section */}
             <section className="mt-8 w-full max-w-lg text-left">
-    <h2 className="text-lg text-[#818cf8] font-semibold mb-3">Start a new spreadsheet</h2>
-    
-    <div className="grid grid-cols-3 gap-4">
-        <Link to="/sheets/new" className="flex flex-col items-center p-4 bg-transparent text-white rounded-lg shadow-lg 
-            ring-2 ring-transparent hover:ring-[#e879f9] transition">
-            <img src="/images/blankSheet.jpg" className="w-16 h-16 object-cover" alt="Blank Spreadsheet"/>
-            {/* <PlusSquare size={20} /> */}
-            <span className="text-sm">Blank Spreadsheet</span>
-        </Link>
+                <h2 className="text-lg text-[#818cf8] font-semibold mb-3">Start a new spreadsheet</h2>
 
-        <Link to="/sheets/new" className="flex flex-col items-center p-4 bg-transparent text-white rounded-lg shadow-lg 
+                <div className="grid grid-cols-3 gap-4">
+                    <Link to="/sheets/new" className="flex flex-col items-center p-4 bg-transparent text-white rounded-lg shadow-lg 
             ring-2 ring-transparent hover:ring-[#e879f9] transition">
-            <img src="/images/Knowledge graph.png" className="w-16 h-16 object-cover" alt="Blank Spreadsheet"/>
-            {/* <PlusSquare size={20} /> */}
-            <span className="text-sm">Knowledge graph</span>
-        </Link>
+                        <img src="/images/blankSheet.jpg" className="w-16 h-16 object-cover" alt="Blank Spreadsheet" />
+                        {/* <PlusSquare size={20} /> */}
+                        <span className="text-sm">Blank Spreadsheet</span>
+                    </Link>
 
-        <Link to="/sheets/todo" className="flex flex-col items-center p-4 bg-transparent rounded-lg shadow-lg 
+                    <Link to="/sheets/new" className="flex flex-col items-center p-4 bg-transparent text-white rounded-lg shadow-lg 
             ring-2 ring-transparent hover:ring-[#e879f9] transition">
-            <img src="/images/todo3.png" className="w-16 h-16 object-cover" alt="To-Do List"/>
-            {/* <FileText size={20} /> */}
-            <span className="text-sm">To-Do List</span>
-        </Link>
-    </div>
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Sheets</h1>
-      <Link to="/sheets/datagrid" className="text-blue-500 underline">
-        Open DataGrid
-      </Link>
-    </div>
-</section>
+                        <img src="/images/Knowledge graph.png" className="w-16 h-16 object-cover" alt="Blank Spreadsheet" />
+                        {/* <PlusSquare size={20} /> */}
+                        <span className="text-sm">Knowledge graph</span>
+                    </Link>
+
+                    <Link to="/sheets/todo" className="flex flex-col items-center p-4 bg-transparent rounded-lg shadow-lg 
+ring-2 ring-transparent hover:ring-[#e879f9] transition">
+                        <img src="/images/todo3.png" className="w-16 h-16 object-cover" alt="To-Do List" />
+                        <span className="text-sm">To-Do List</span>
+                    </Link>
+
+
+                </div>
+                <div className="p-6">
+                    <h1 className="text-2xl font-bold mb-4">Sheets</h1>
+                    <Link to="/sheets/datagrid" className="text-blue-500 underline">
+                        Open DataGrid
+                    </Link>
+                </div>
+            </section>
 
             {/* Recent Files Section */}
             <section className="mt-10 w-full max-w-lg text-left">

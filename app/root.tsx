@@ -98,6 +98,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <div className="space-x-4">
             <Link to="/chat" className="text-blue-300 hover:text-[#e879f9]">Home</Link>
             <Link to="/sheets" className="text-blue-300 hover:text-[#e879f9]">WorkSheets</Link>
+            
+
           </div>
         </nav>
 
@@ -113,5 +115,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-    return <Outlet />;
+  return <Outlet />;
 }
+
